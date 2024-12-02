@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: BadStats
+
+server:
+  port: 8181
+management:
+  endpoints:
+    web:
+      base-path: /mgmt
+      exposure:
+        include: health,info, env
+  server:
+    port: 9191
+
+
+logging:
+  pattern:
+    console: "%date %5p %logger{30} - %message%n"
+  level:
+    org.springframework: WARN

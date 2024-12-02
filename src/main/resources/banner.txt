@@ -1,0 +1,13 @@
+  ____            _  _____ _        _
+ |  _ \          | |/ ____| |      | |
+ | |_) | __ _  __| | (___ | |_ __ _| |_ ___
+ |  _ < / _` |/ _` |\___ \| __/ _` | __/ __|
+ | |_) | (_| | (_| |____) | || (_| | |_\__ \
+ |____/ \__,_|\__,_|_____/ \__\__,_|\__|___/
+
+
+${application.title} ${application.version}
+::Application Name ::      ${spring.application.name}
+::Spring Boot Version ::   ${spring-boot.version}
+::Server Port ::           ${server.port}
+::Management Port ::       ${management.server.port}
