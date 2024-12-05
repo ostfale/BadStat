@@ -17,7 +17,11 @@
     <description>Player statistics for Turnier.de Badminton</description>
 
     <properties>
-        <java.version>23</java.version>
+        <java.version>22</java.version>
+
+        <!-- libs -->
+        <htmlunit.version>4.7.0</htmlunit.version>
+
     </properties>
 
     <dependencies>
@@ -31,6 +35,8 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+
+
         <!--database-->
        <!-- <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -41,6 +47,15 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>-->
+
+        <!--parser-->
+        <!-- https://mvnrepository.com/artifact/org.htmlunit/htmlunit -->
+        <dependency>
+            <groupId>org.htmlunit</groupId>
+            <artifactId>htmlunit</artifactId>
+            <version>${htmlunit.version}</version>
+        </dependency>
+
 
         <!--test-->
         <dependency>
@@ -104,5 +119,21 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
 
 </project>
