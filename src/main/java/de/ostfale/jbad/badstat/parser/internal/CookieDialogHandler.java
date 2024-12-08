@@ -1,20 +1,22 @@
 package de.ostfale.jbad.badstat.parser.internal;
 
-import org.htmlunit.Page;
+import de.ostfale.jbad.badstat.parser.api.ICookieHandler;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlButton;
 import org.htmlunit.html.HtmlPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-public class CookieDialogHandler {
+@Component
+public class CookieDialogHandler implements ICookieHandler {
     private static final Logger log = LoggerFactory.getLogger(CookieDialogHandler.class);
     private static final String COOKIE_WALL = "cookiewall";
     private static final String COOKIE_BUTTON_XPATH = "/html/body/div/div/div/main/form/div[1]/button[1]";
 
-    public Page loadWebsite(String url) {
+    public HtmlPage loadWebsite(String url) {
         WebClient webClient = ConfiguredWebClient.getWebClient();
         HtmlPage page = null;
         try {
