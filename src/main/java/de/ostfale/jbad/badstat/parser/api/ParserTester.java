@@ -2,6 +2,7 @@ package de.ostfale.jbad.badstat.parser.api;
 
 import de.ostfale.jbad.badstat.parser.internal.CookieDialogHandler;
 import de.ostfale.jbad.badstat.parser.internal.TournamentHeaderInfo;
+import de.ostfale.jbad.badstat.parser.internal.TournamentMatch;
 import org.htmlunit.html.HtmlDivision;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -29,7 +31,6 @@ public class ParserTester {
     public List<HtmlElement> getModuleCardElements(HtmlPage page) {
         return page.getByXPath("//*[@id=\"tabcontent\"]//div[contains(@class, 'module--card')]");
     }
-
 
 
     public void test() {
@@ -86,6 +87,20 @@ public class ParserTester {
 
             // read all disciplines as list
             var disciplineNames = getDisciplineName(tournamentDiv);
+
+            // match-groups contains details and result to a match
+            List<HtmlElement> matchGroups = tournamentDiv.getByXPath(".//ol");
+
+            // loop over all disciplines for a tournament || processing of header and matches
+            for (int i = 0; i < disciplineNames.size(); i++) {
+                log.info("Discipline: {}", disciplineNames.get(i));
+
+                var matchGroup = matchGroups.get(i);
+                var tournamentMatch = parseMatch(matchGroup);
+                log.info("Match: {}", tournamentMatch);
+            }
+
+
             System.out.println("\nDisciplines: " + disciplineNames);
         });
     }
@@ -106,15 +121,46 @@ public class ParserTester {
         var tournamentOrganisation = orgaAndLocation[0];
         var tournamentLocation = orgaAndLocation[1];
         var tournamentId = "?";
-        var tournamentDate= tournamentDateElement.asNormalizedText();
+        var tournamentDate = tournamentDateElement.asNormalizedText();
 
         return new TournamentHeaderInfo(tournamentName, tournamentOrganisation, tournamentLocation, tournamentId, tournamentDate);
     }
 
+    // dis
     private List<String> getDisciplineName(HtmlDivision moduleContent) {
         List<HtmlElement> disciplineNameElements = moduleContent.getByXPath(".//h4[contains(@class, 'module-divider')]");
         return disciplineNameElements.stream().map(HtmlElement::asNormalizedText).toList();
     }
+
+
+    // each match = div :: match-group__item
+    private List<TournamentMatch> parseMatch(HtmlElement match) {
+        final String MATCH_GROUP = ".//li[contains(@class, 'match-group__item')]";
+        final String MATCH_ROUND_NAME = ".//li[contains(@class, 'match__header-title-item')]";
+        final String MATCH_ROUND_DURATION = ".//div[contains(@class, 'match__header-aside')]";
+        final String MATCH_ROUND_ICON_DATE = ".//li[contains(@class, 'match__footer-list-item')]";
+
+
+        List<TournamentMatch> matchList = new ArrayList<>();
+
+        // each match group has some rounds which should be parsed in parallel
+        List<HtmlElement> matchGroupList = match.getByXPath(MATCH_GROUP);
+        matchGroupList.forEach(matchGroup -> {
+
+            HtmlElement matchRoundNameDiv = matchGroup.getFirstByXPath(MATCH_ROUND_NAME);
+            HtmlElement matchRoundDurationDiv = matchGroup.getFirstByXPath(MATCH_ROUND_DURATION);
+            List<HtmlElement> matchRoundDateLocDiv = matchGroup.getByXPath(MATCH_ROUND_ICON_DATE);
+
+
+            var matchRoundName = matchRoundNameDiv != null ? matchRoundNameDiv.asNormalizedText() :"";
+            var matchRoundDate = matchRoundDateLocDiv.getFirst() != null ? matchRoundDateLocDiv.getFirst().asNormalizedText() : "";
+            var matchRoundCourt = matchRoundDateLocDiv.getLast() != null ? matchRoundDateLocDiv.getLast().asNormalizedText() : "";
+            var matchRoundDuration = matchRoundDurationDiv != null ? matchRoundDurationDiv.asNormalizedText() : "";
+            matchList.add(new TournamentMatch(matchRoundName, matchRoundDate, matchRoundCourt, matchRoundDuration));
+        });
+        return matchList;
+    }
+
 
     private List<HtmlDivision> getPlayersTournaments(HtmlPage page) {
         final String FIRST_MODULE_CARD = "//div[contains(@class, 'module module--card')]";
@@ -133,5 +179,7 @@ public class ParserTester {
         log.error("Could not find tournament name");
         return null;
     }
+
+
 
 }
