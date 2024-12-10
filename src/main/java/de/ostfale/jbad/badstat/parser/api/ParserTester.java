@@ -33,45 +33,6 @@ public class ParserTester {
     }
 
 
-    public void test() {
-        var cookieHander = new CookieDialogHandler();
-        HtmlPage page = cookieHander.loadWebsite(BASE_URL);
-
-        // read all module cards
-        List<HtmlDivision> moduleCards = page.getByXPath("//div[contains(@class, 'module module--card')]");
-
-        moduleCards.forEach(element -> {
-
-            // read tournament header 
-            HtmlElement mediaContent = element.getFirstByXPath(".//div[contains(@class, 'media__content')]");
-            if (mediaContent != null) {
-                System.out.println("\n\n" + mediaContent.asNormalizedText());
-            }
-
-
-            // read all matches per card
-            List<HtmlElement> matchgroups = element.getByXPath(".//ol");
-
-            matchgroups.forEach(matchgroup -> {
-
-                // read all h4 elements with class "module-divider"
-                List<HtmlElement> dividers = element.getByXPath(".//h4[contains(@class, 'module-divider')]");
-                dividers.forEach(divider -> {
-
-                            System.out.println("Discipline -> " + divider.asNormalizedText());
-                        }
-                );
-
-                // read which round
-                List<HtmlElement> roundName = matchgroup.getByXPath(".//ul[contains(@class, 'match__header-title')]");
-                roundName.forEach(round -> System.out.println("\tRound -> " + round.asNormalizedText()));
-            });
-
-            System.out.println("MatchGroups Size: " + matchgroups.size());
-        });
-    }
-
-
     public void readAllTournamentsForPlayer() {
         log.info("Reading all tournaments for player for URL: {}", BASE_URL);
         var cookieHandler = new CookieDialogHandler();
@@ -160,6 +121,7 @@ public class ParserTester {
         });
         return matchList;
     }
+
 
 
     private List<HtmlDivision> getPlayersTournaments(HtmlPage page) {
