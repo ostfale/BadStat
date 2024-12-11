@@ -2,7 +2,7 @@ package de.ostfale.jbad.badstat.parser.api;
 
 import de.ostfale.jbad.badstat.parser.internal.CookieDialogHandler;
 import de.ostfale.jbad.badstat.parser.internal.TournamentHeaderInfo;
-import de.ostfale.jbad.badstat.parser.internal.TournamentMatch;
+import de.ostfale.jbad.badstat.parser.internal.match.TournamentMatch;
 import org.htmlunit.html.HtmlDivision;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
